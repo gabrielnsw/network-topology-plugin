@@ -38,3 +38,4 @@ jobs:
           path: |
             *.zip
             *.md5
+            gabrielnsw-noctopology-panel/*.zip
