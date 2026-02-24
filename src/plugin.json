@@ -18,9 +18,27 @@
         "name": "GitHub",
         "url": "https://github.com/gabrielnsw",
         "target": "_blank"
+      },
+      {
+        "name": "sponsor",
+        "url": "https://github.com/sponsors/gabrielnsw",
+        "target": "_blank"
       }
     ],
-    "screenshots": [],
+    "screenshots": [
+      {
+        "name": "Topology View",
+        "path": "img/topology-view.png"
+      },
+      {
+        "name": "Connection Configuration",
+        "path": "img/configure-connection.png"
+      },
+      {
+        "name": "Connection Details",
+        "path": "img/connection-details.png"
+      }
+    ],
     "version": "%VERSION%",
     "updated": "%TODAY%"
   },
