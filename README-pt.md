@@ -8,6 +8,8 @@ _(🌎 Read this document in English [here](README.md))_
 
 O **Network Topology** é um plugin de painel para Grafana construído para exibir mapas de rede interativos utilizando o Cytoscape.js integrado nativamente às respostas do próprio Grafana.
 
+![Visualização da Topologia](https://raw.githubusercontent.com/gabrielnsw/network-topology-plugin/main/src/img/topology-view.png)
+
 Em vez de depender de servidores externos ou APIs intermediárias, esse painel aproveita os dados brutos (DataFrames) que o Grafana puxa do plugin do Zabbix oficial. Isso permite visualizar com precisão e tempo real o tráfego das suas interfaces, perdas de pacote, latência e o status (UP/DOWN) direto em cima dos seus equipamentos desenhados.
 
 **Funcionalidades principais:**
@@ -18,6 +20,20 @@ Em vez de depender de servidores externos ou APIs intermediárias, esse painel a
 - **Inspeção de links dinâmica:** As arestas mudam de cor conforme o tráfego medido, identificando rapidamente gargalos e problemas.
 - **Backup local integrado:** Ferramentas nativas para que a sua topologia inteira e customizações de tema sejam exportadas em JSON ou restauradas de forma portátil.
 - **Tradução nativa:** Interface interna com suporte ao idioma inglês, português e espanhol.
+
+### Galeria de Telas
+
+**Adicionar Dispositivo e Mapeamento:**
+![Adicionar Dispositivo](https://raw.githubusercontent.com/gabrielnsw/network-topology-plugin/main/src/img/add-device.png)
+
+**Configuração de Links:**
+![Configurar Conexão](https://raw.githubusercontent.com/gabrielnsw/network-topology-plugin/main/src/img/configure-connection.png)
+
+**Detalhes e Inspeção da Conexão:**
+![Detalhes da Conexão](https://raw.githubusercontent.com/gabrielnsw/network-topology-plugin/main/src/img/connection-details.png)
+
+**Configurações do Painel e Tema:**
+![Configurações](https://raw.githubusercontent.com/gabrielnsw/network-topology-plugin/main/src/img/settings.png)
 
 ## Requisitos
 
