@@ -54,6 +54,7 @@ export const SimplePanel: React.FC<Props> = ({ options, data, width, height, onO
   const [showEdgeModal, setShowEdgeModal] = useState(false);
   const [showSettingsModal, setShowSettingsModal] = useState(false);
   const [duplicateAlert, setDuplicateAlert] = useState(false);
+  const [alertMessage, setAlertMessage] = useState<string | null>(null);
   const [selectedEdgeData, setSelectedEdgeData] = useState<any>(null);
   
   const t = useTranslation(themeSettings.language);
@@ -106,9 +107,11 @@ export const SimplePanel: React.FC<Props> = ({ options, data, width, height, onO
             themeSettings: newTheme
           });
           setShowSettingsModal(false);
+        } else {
+          setAlertMessage("Arquivo de backup inválido: Faltam os elementos do mapa.");
         }
       } catch (err) {
-        alert(t('noDataLegend') + ": Invalid json.");
+        setAlertMessage(t('noDataLegend') + ": Invalid json.");
       }
     };
     reader.readAsText(file);
@@ -334,7 +337,7 @@ export const SimplePanel: React.FC<Props> = ({ options, data, width, height, onO
       
       const existing = cyRef.current.getElementById(deviceId);
       if (existing.length > 0) {
-        alert('Este dispositivo já está no mapa.');
+        setAlertMessage('Este dispositivo já está no mapa.');
         setShowAddModal(false);
         return;
       }
@@ -665,6 +668,25 @@ export const SimplePanel: React.FC<Props> = ({ options, data, width, height, onO
                 <button
                   className="noc-mod-btn confirm"
                   onClick={() => setDuplicateAlert(false)}
+                >
+                  Confirmar
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {alertMessage && (
+          <div className="noc-modal-overlay">
+            <div className="noc-modal-content" style={{ width: 350, textAlign: 'center' }}>
+              <h3 className="noc-modal-title" style={{ color: '#f87171' }}>Atenção</h3>
+              <p style={{ color: '#d1d5db', marginBottom: 20 }}>
+                {alertMessage}
+              </p>
+              <div style={{ display: 'flex', justifyContent: 'center' }}>
+                <button
+                  className="noc-mod-btn confirm"
+                  onClick={() => setAlertMessage(null)}
                 >
                   Confirmar
                 </button>
