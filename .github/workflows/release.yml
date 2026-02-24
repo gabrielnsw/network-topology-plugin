@@ -39,3 +39,11 @@ jobs:
             *.zip
             *.md5
             gabrielnsw-noctopology-panel/*.zip
+
+      - name: Create Github Release
+        uses: softprops/action-gh-release@v2
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: |
+            *.zip
+            *.md5
