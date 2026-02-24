@@ -13,7 +13,9 @@ const getUnit = (field: any) => field.config?.unit || '';
 export const parseZabbixDataFrame = (seriesList: DataFrame[]): Record<string, ZabbixHost> => {
   const parsedMetrics: Record<string, ZabbixHost> = {};
 
-  if (!seriesList) return parsedMetrics;
+  if (!seriesList) {
+    return parsedMetrics;
+  }
 
   seriesList.forEach((series: any) => {
     for (const field of series.fields) {
@@ -110,7 +112,9 @@ export const parseZabbixDataFrame = (seriesList: DataFrame[]): Record<string, Za
  * @returns Array of sorted metric frames aggregating time intervals mapped tightly to TX/RX values.
  */
 export const extractTrafficHistory = (seriesList: DataFrame[], hostName: string, iface: string): TrafficPoint[] => {
-  if (!seriesList) return [];
+  if (!seriesList) {
+    return [];
+  }
 
   const trafficPointsMap: Record<number, any> = {};
 
@@ -124,7 +128,9 @@ export const extractTrafficHistory = (seriesList: DataFrame[], hostName: string,
       }
     }
 
-    if (!timeField) return;
+    if (!timeField) {
+      return;
+    }
 
     for (const field of series.fields) {
       if (field.type === FieldType.number || (field.type as unknown as string) === 'number') {
@@ -143,14 +149,20 @@ export const extractTrafficHistory = (seriesList: DataFrame[], hostName: string,
         sHostName = sHostName || 'Unknown Device';
         sItem = sItem || fieldName || 'Unknown Metric';
 
-        if (sHostName !== hostName || !sItem) continue;
-        if (!sItem.includes(iface)) continue;
+        if (sHostName !== hostName || !sItem) {
+          continue;
+        }
+        if (!sItem.includes(iface)) {
+          continue;
+        }
 
         const itemLower = sItem.toLowerCase();
         const isRx = itemLower.includes('recebid') || itemLower.includes('in') || itemLower.includes('received');
         const isTx = itemLower.includes('enviad') || itemLower.includes('out') || itemLower.includes('sent');
 
-        if (!isRx && !isTx) continue;
+        if (!isRx && !isTx) {
+          continue;
+        }
 
         const tVals = timeField.values.toArray ? timeField.values.toArray() : timeField.values;
         const vVals = field.values.toArray ? field.values.toArray() : field.values;
@@ -160,9 +172,15 @@ export const extractTrafficHistory = (seriesList: DataFrame[], hostName: string,
           const t = tVals[i];
           const v = vVals[i];
           if (t != null && v != null) {
-            if (!trafficPointsMap[t]) trafficPointsMap[t] = { clock: t, tx: 0, rx: 0 };
-            if (isRx) trafficPointsMap[t].rx = v;
-            if (isTx) trafficPointsMap[t].tx = v;
+            if (!trafficPointsMap[t]) {
+              trafficPointsMap[t] = { clock: t, tx: 0, rx: 0 };
+            }
+            if (isRx) {
+              trafficPointsMap[t].rx = v;
+            }
+            if (isTx) {
+              trafficPointsMap[t].tx = v;
+            }
           }
         }
       }

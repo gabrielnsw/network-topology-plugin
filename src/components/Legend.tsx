@@ -13,7 +13,9 @@ interface LegendProps {
  * @param t - Function hooked to the i18n provider for dynamic multi-language texts
  */
 export const Legend: React.FC<LegendProps> = ({ visible, t }) => {
-  if (!visible) return null;
+  if (!visible) {
+    return null;
+  }
 
   return (
     <div className="noc-legend">
