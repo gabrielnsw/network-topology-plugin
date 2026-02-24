@@ -1,0 +1,31 @@
+{
+  "$schema": "https://raw.githubusercontent.com/grafana/grafana/main/docs/sources/developers/plugins/plugin.schema.json",
+  "type": "panel",
+  "name": "Network Topology",
+  "id": "gabrielnsw-noctopology-panel",
+  "info": {
+    "description": "Network Topology visualization with mapped metrics using Cytoscape.js",
+    "author": {
+      "name": "Gabrielnsw"
+    },
+    "keywords": ["panel", "topology", "network", "cytoscape"],
+    "logos": {
+      "small": "img/logo.svg",
+      "large": "img/logo.svg"
+    },
+    "links": [
+      {
+        "name": "GitHub",
+        "url": "https://github.com/gabrielnsw",
+        "target": "_blank"
+      }
+    ],
+    "screenshots": [],
+    "version": "%VERSION%",
+    "updated": "%TODAY%"
+  },
+  "dependencies": {
+    "grafanaDependency": ">=10.0.0",
+    "plugins": []
+  }
+}
