@@ -6,33 +6,31 @@ const getUnit = (field: any) => field.config?.unit || '';
 /**
  * Parses raw Grafana DataFrames containing Zabbix metrics and aggregates them into a structured host map.
  * Extracts interface traffic metadata, ping statistics, and stores raw item values for dynamic UI binding.
- * 
+ *
  * @param seriesList - The array of DataFrames provided by the Grafana query response.
  * @returns A normalized dictionary of configured Zabbix components indexing core metrics and active network interfaces.
  */
 export const parseZabbixDataFrame = (seriesList: DataFrame[]): Record<string, ZabbixHost> => {
   const parsedMetrics: Record<string, ZabbixHost> = {};
 
-  if (!seriesList) {
-    return parsedMetrics;
-  }
+  if (!seriesList) return parsedMetrics;
 
   seriesList.forEach((series: any) => {
     for (const field of series.fields) {
       if (field.type === FieldType.number || (field.type as unknown as string) === 'number') {
         let hostName = field.labels?.host || field.labels?.hostname;
         let item = field.labels?.item;
-        
+
         let fieldName = field.config?.displayName || field.config?.displayNameFromDS || field.name;
 
         if (!hostName && fieldName) {
-           const parts = fieldName.split(':').map((s: string) => s.trim());
-           if (parts.length >= 2) {
-             hostName = parts[0];
-             item = parts.slice(1).join(': ');
-           }
+          const parts = fieldName.split(':').map((s: string) => s.trim());
+          if (parts.length >= 2) {
+            hostName = parts[0];
+            item = parts.slice(1).join(': ');
+          }
         }
-        
+
         hostName = hostName || 'Unknown Device';
         item = item || fieldName || 'Unknown Metric';
 
@@ -48,7 +46,7 @@ export const parseZabbixDataFrame = (seriesList: DataFrame[]): Record<string, Za
             break;
           }
         }
-        
+
         const unit = getUnit(field);
         parsedMetrics[hostName].items[item] = val;
 
@@ -58,7 +56,12 @@ export const parseZabbixDataFrame = (seriesList: DataFrame[]): Record<string, Za
           parsedMetrics[hostName].loss = val;
         } else if (itemLower.includes('ping') || itemLower.includes('icmp ping')) {
           parsedMetrics[hostName].ping = val;
-        } else if (itemLower.includes('latency') || itemLower.includes('latência') || itemLower.includes('response time') || itemLower.includes('tempo de resposta')) {
+        } else if (
+          itemLower.includes('latency') ||
+          itemLower.includes('latência') ||
+          itemLower.includes('response time') ||
+          itemLower.includes('tempo de resposta')
+        ) {
           parsedMetrics[hostName].latency = val;
         }
 
@@ -82,40 +85,38 @@ export const parseZabbixDataFrame = (seriesList: DataFrame[]): Record<string, Za
         parsedMetrics[hostName].interfaces[ifaceName][metricName] = {
           value: val,
           units: unit === 'bps' ? 'bps' : unit,
-          itemid: ''
+          itemid: '',
         };
       }
     }
   });
 
   if (Object.keys(parsedMetrics).length > 0 && parsedMetrics['Unknown Device']) {
-      if (Object.keys(parsedMetrics['Unknown Device'].interfaces).length === 0) {
-          delete parsedMetrics['Unknown Device'];
-      }
+    if (Object.keys(parsedMetrics['Unknown Device'].interfaces).length === 0) {
+      delete parsedMetrics['Unknown Device'];
+    }
   }
 
   return parsedMetrics;
 };
 
 /**
- * Isolates and chronologically compiles high-resolution traffic point histories from raw DataFrames 
+ * Isolates and chronologically compiles high-resolution traffic point histories from raw DataFrames
  * mapping exclusively to designated Host/Interface boundaries for chart rendering implementations.
- * 
+ *
  * @param seriesList - The full dataset payload from Grafana backend.
  * @param hostName - The target Zabbix host alias bound to the query block.
  * @param iface - The specific network interface to filter inbound/outbound histories against.
  * @returns Array of sorted metric frames aggregating time intervals mapped tightly to TX/RX values.
  */
 export const extractTrafficHistory = (seriesList: DataFrame[], hostName: string, iface: string): TrafficPoint[] => {
-  if (!seriesList) {
-    return [];
-  }
+  if (!seriesList) return [];
 
   const trafficPointsMap: Record<number, any> = {};
 
   seriesList.forEach((series: any) => {
     let timeField: any = null;
-    
+
     for (const field of series.fields) {
       if (field.type === FieldType.time || (field.type as unknown as string) === 'time') {
         timeField = field;
@@ -123,9 +124,7 @@ export const extractTrafficHistory = (seriesList: DataFrame[], hostName: string,
       }
     }
 
-    if (!timeField) {
-      return;
-    }
+    if (!timeField) return;
 
     for (const field of series.fields) {
       if (field.type === FieldType.number || (field.type as unknown as string) === 'number') {
@@ -134,30 +133,24 @@ export const extractTrafficHistory = (seriesList: DataFrame[], hostName: string,
         let fieldName = field.config?.displayName || field.config?.displayNameFromDS || field.name;
 
         if (!sHostName && fieldName) {
-            const parts = fieldName.split(':').map((s: string) => s.trim());
-            if (parts.length >= 2) {
-                sHostName = parts[0];
-                sItem = parts.slice(1).join(': ');
-            }
+          const parts = fieldName.split(':').map((s: string) => s.trim());
+          if (parts.length >= 2) {
+            sHostName = parts[0];
+            sItem = parts.slice(1).join(': ');
+          }
         }
-        
+
         sHostName = sHostName || 'Unknown Device';
         sItem = sItem || fieldName || 'Unknown Metric';
 
-        if (sHostName !== hostName || !sItem) {
-          continue;
-        }
-        if (!sItem.includes(iface)) {
-          continue;
-        }
-        
+        if (sHostName !== hostName || !sItem) continue;
+        if (!sItem.includes(iface)) continue;
+
         const itemLower = sItem.toLowerCase();
         const isRx = itemLower.includes('recebid') || itemLower.includes('in') || itemLower.includes('received');
         const isTx = itemLower.includes('enviad') || itemLower.includes('out') || itemLower.includes('sent');
-        
-        if (!isRx && !isTx) {
-          continue;
-        }
+
+        if (!isRx && !isTx) continue;
 
         const tVals = timeField.values.toArray ? timeField.values.toArray() : timeField.values;
         const vVals = field.values.toArray ? field.values.toArray() : field.values;
@@ -167,15 +160,9 @@ export const extractTrafficHistory = (seriesList: DataFrame[], hostName: string,
           const t = tVals[i];
           const v = vVals[i];
           if (t != null && v != null) {
-            if (!trafficPointsMap[t]) {
-              trafficPointsMap[t] = { clock: t, tx: 0, rx: 0 };
-            }
-            if (isRx) {
-              trafficPointsMap[t].rx = v;
-            }
-            if (isTx) {
-              trafficPointsMap[t].tx = v;
-            }
+            if (!trafficPointsMap[t]) trafficPointsMap[t] = { clock: t, tx: 0, rx: 0 };
+            if (isRx) trafficPointsMap[t].rx = v;
+            if (isTx) trafficPointsMap[t].tx = v;
           }
         }
       }
@@ -184,4 +171,3 @@ export const extractTrafficHistory = (seriesList: DataFrame[], hostName: string,
 
   return Object.values(trafficPointsMap).sort((a: any, b: any) => a.clock - b.clock);
 };
-

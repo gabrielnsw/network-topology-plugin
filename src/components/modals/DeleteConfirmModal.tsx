@@ -8,9 +8,7 @@ interface DeleteConfirmModalProps {
   t: (key: string) => string;
 }
 
-export const DeleteConfirmModal: React.FC<DeleteConfirmModalProps> = ({
-  deleteConfirm, onClose, onConfirm, t
-}) => {
+export const DeleteConfirmModal: React.FC<DeleteConfirmModalProps> = ({ deleteConfirm, onClose, onConfirm, t }) => {
   if (!deleteConfirm.visible) return null;
 
   return (

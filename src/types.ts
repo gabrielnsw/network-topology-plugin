@@ -36,7 +36,7 @@ export interface CtxMenu {
 
 export interface InfoModalData {
   visible: boolean;
-  type: "node" | "edge";
+  type: 'node' | 'edge';
   targetId: string;
 }
 
@@ -77,4 +77,3 @@ export interface TrafficPoint {
   tx: number;
   rx: number;
 }
-

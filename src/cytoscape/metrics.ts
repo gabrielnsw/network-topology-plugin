@@ -4,7 +4,7 @@ import { NODE_SIZES } from '../constants';
 
 /**
  * Formats a raw bit per second integer into a readable string scale (Kbps, Mbps, Gbps).
- * 
+ *
  * @param bps - The raw traffic volume measured in bits per second.
  * @returns A formatted string containing the highest possible scale (e.g., "12.50 Mbps").
  */
@@ -22,14 +22,18 @@ export const formatTraffic = (bps: number): string => {
 
 /**
  * Evaluates the Zabbix API payload and applies the status metrics (loss, latency, throughput)
- * directly into the Cytoscape graph nodes and edges via data properties. Also responsible 
+ * directly into the Cytoscape graph nodes and edges via data properties. Also responsible
  * for translating edge color constraints dynamically.
- * 
+ *
  * @param cy - The initialized Cytoscape core instance holding the active graph topology.
  * @param zabbixMetrics - A dictionary mapped by Node IDs containing their live query metrics.
  * @param t - The i18n translation hook used for appending multilingual 'No Data' labels etc.
  */
-export const refreshMetricsCore = (cy: cytoscape.Core, zabbixMetrics: Record<string, ZabbixHost>, t: (key: string) => string) => {
+export const refreshMetricsCore = (
+  cy: cytoscape.Core,
+  zabbixMetrics: Record<string, ZabbixHost>,
+  t: (key: string) => string
+) => {
   cy.nodes().forEach((node) => {
     const id = node.id();
     const h = (zabbixMetrics || {})[id];
@@ -43,14 +47,14 @@ export const refreshMetricsCore = (cy: cytoscape.Core, zabbixMetrics: Record<str
       const customLatencyItem = node.data('customLatencyItem');
 
       if (customLossItem && h.items && h.items[customLossItem] !== undefined) {
-         loss = Number(h.items[customLossItem]) || 0;
+        loss = Number(h.items[customLossItem]) || 0;
       }
       if (customPingItem && h.items && h.items[customPingItem] !== undefined) {
-         ping = Number(h.items[customPingItem]) || 0;
+        ping = Number(h.items[customPingItem]) || 0;
       }
       if (customLatencyItem && h.items && h.items[customLatencyItem] !== undefined) {
-         let rawLatency = h.items[customLatencyItem];
-         latency = `${rawLatency} ms`;
+        let rawLatency = h.items[customLatencyItem];
+        latency = `${rawLatency} ms`;
       }
 
       let color = '#10b981';
@@ -126,7 +130,7 @@ export const refreshMetricsCore = (cy: cytoscape.Core, zabbixMetrics: Record<str
         if (hasBits) {
           edgeColor = bitsValue > 0 ? '#10b981' : '#ef4444';
         }
-        
+
         edge.data('eColor', edgeColor);
         if (edge.source().hasClass('anchor')) edge.source().data('anchorColor', edgeColor);
         if (edge.target().hasClass('anchor')) edge.target().data('anchorColor', edgeColor);
@@ -155,4 +159,3 @@ export const refreshMetricsCore = (cy: cytoscape.Core, zabbixMetrics: Record<str
     }
   });
 };
-

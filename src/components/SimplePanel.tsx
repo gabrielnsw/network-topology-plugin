@@ -1,7 +1,15 @@
 import React, { useEffect, useRef, useState, useCallback, useMemo } from 'react';
 import cytoscape from 'cytoscape';
 import { PanelProps } from '@grafana/data';
-import { SimpleOptions, ThemeSettings, TopoState, CtxMenu, InfoModalData, DeleteConfirmData, ZabbixHost } from '../types';
+import {
+  SimpleOptions,
+  ThemeSettings,
+  TopoState,
+  CtxMenu,
+  InfoModalData,
+  DeleteConfirmData,
+  ZabbixHost,
+} from '../types';
 import { DEFAULT_THEME, CSS } from '../constants';
 import { useTranslation } from '../translations';
 import { parseZabbixDataFrame } from '../api';
@@ -46,7 +54,14 @@ export const SimplePanel: React.FC<Props> = ({ options, data, width, height, onO
     isFetching: false,
   });
 
-  const [ctxMenu, setCtxMenu] = useState<CtxMenu>({ visible: false, x: 0, y: 0, canvasPos: null, targetId: '', targetIsNode: false });
+  const [ctxMenu, setCtxMenu] = useState<CtxMenu>({
+    visible: false,
+    x: 0,
+    y: 0,
+    canvasPos: null,
+    targetId: '',
+    targetIsNode: false,
+  });
   const [infoModal, setInfoModal] = useState<InfoModalData>({ visible: false, type: 'node', targetId: '' });
   const [deleteConfirm, setDeleteConfirm] = useState<DeleteConfirmData>({ visible: false, targetId: '', name: '' });
 
@@ -56,7 +71,7 @@ export const SimplePanel: React.FC<Props> = ({ options, data, width, height, onO
   const [duplicateAlert, setDuplicateAlert] = useState(false);
   const [alertMessage, setAlertMessage] = useState<string | null>(null);
   const [selectedEdgeData, setSelectedEdgeData] = useState<any>(null);
-  
+
   const t = useTranslation(themeSettings.language);
 
   const handleExportBackup = useCallback(() => {
@@ -64,59 +79,62 @@ export const SimplePanel: React.FC<Props> = ({ options, data, width, height, onO
     const elements = cyRef.current.elements().jsons();
     const backupData = {
       elements,
-      themeSettings: options.themeSettings
+      themeSettings: options.themeSettings,
     };
     const jsonStr = JSON.stringify(backupData, null, 2);
-    const blob = new Blob([jsonStr], { type: "application/json" });
+    const blob = new Blob([jsonStr], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
-    
+
     const downloadAnchorNode = document.createElement('a');
-    downloadAnchorNode.setAttribute("href", url);
-    downloadAnchorNode.setAttribute("target", "_blank");
-    downloadAnchorNode.setAttribute("download", `topology_backup_${new Date().toISOString().split('T')[0]}.json`);
+    downloadAnchorNode.setAttribute('href', url);
+    downloadAnchorNode.setAttribute('target', '_blank');
+    downloadAnchorNode.setAttribute('download', `topology_backup_${new Date().toISOString().split('T')[0]}.json`);
     document.body.appendChild(downloadAnchorNode);
     downloadAnchorNode.click();
-    
+
     document.body.removeChild(downloadAnchorNode);
     URL.revokeObjectURL(url);
   }, [options.themeSettings]);
 
-  const handleImportBackup = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = (event) => {
-      try {
-        const json = JSON.parse(event.target?.result as string);
-        if (json && json.elements && cyRef.current) {
-          cyRef.current.elements().remove();
-          cyRef.current.add(json.elements);
-          
-          const cyData = cleanElementsForSaving(cyRef.current);
-          const str = JSON.stringify(cyData);
-          updateState({
-            history: [str],
-            historyIdx: 0,
-          });
+  const handleImportBackup = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const file = e.target.files?.[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        try {
+          const json = JSON.parse(event.target?.result as string);
+          if (json && json.elements && cyRef.current) {
+            cyRef.current.elements().remove();
+            cyRef.current.add(json.elements);
 
-          const newTheme = json.themeSettings || options.themeSettings;
-          setThemeSettings(newTheme);
-          onOptionsChange({
-            ...options,
-            topologyData: str,
-            themeSettings: newTheme
-          });
-          setShowSettingsModal(false);
-        } else {
-          setAlertMessage("Arquivo de backup inválido: Faltam os elementos do mapa.");
+            const cyData = cleanElementsForSaving(cyRef.current);
+            const str = JSON.stringify(cyData);
+            updateState({
+              history: [str],
+              historyIdx: 0,
+            });
+
+            const newTheme = json.themeSettings || options.themeSettings;
+            setThemeSettings(newTheme);
+            onOptionsChange({
+              ...options,
+              topologyData: str,
+              themeSettings: newTheme,
+            });
+            setShowSettingsModal(false);
+          } else {
+            setAlertMessage('Arquivo de backup inválido: Faltam os elementos do mapa.');
+          }
+        } catch (err) {
+          setAlertMessage(t('noDataLegend') + ': Invalid json.');
         }
-      } catch (err) {
-        setAlertMessage(t('noDataLegend') + ": Invalid json.");
-      }
-    };
-    reader.readAsText(file);
-    e.target.value = '';
-  }, [options, onOptionsChange, t]);
+      };
+      reader.readAsText(file);
+      e.target.value = '';
+    },
+    [options, onOptionsChange, t]
+  );
 
   const updateState = (updates: Partial<TopoState>) => {
     setState((prev) => ({ ...prev, ...updates }));
@@ -194,10 +212,10 @@ export const SimplePanel: React.FC<Props> = ({ options, data, width, height, onO
               const n = cy.getElementById(currentId);
               if (!n.length) return [];
               if (!n.hasClass('anchor') && currentId !== startId) return [currentId];
-              
+
               let endpoints: string[] = [];
               const connectedEdges = n.connectedEdges();
-              connectedEdges.forEach(e => {
+              connectedEdges.forEach((e) => {
                 const src = e.data('source');
                 const tgt = e.data('target');
                 const nextNode = src === currentId ? tgt : src;
@@ -210,7 +228,9 @@ export const SimplePanel: React.FC<Props> = ({ options, data, width, height, onO
             if (srcEndpoints.includes(id)) {
               setDuplicateAlert(true);
               const srcNode = cy.getElementById(currState.sourceNodeId);
-              if (srcNode.length) { srcNode.removeClass('selected'); }
+              if (srcNode.length) {
+                srcNode.removeClass('selected');
+              }
               node.removeClass('selected');
               updateState({ sourceNodeId: null, targetNodeId: null, linkMode: false });
             } else {
@@ -267,12 +287,11 @@ export const SimplePanel: React.FC<Props> = ({ options, data, width, height, onO
           const str = JSON.stringify(cleanElementsForSaving(cy));
           updateState({ history: [str], historyIdx: 0 });
         }
-      } catch (e) {
-      }
+      } catch (e) {}
     }
 
     return () => cy.destroy();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -295,7 +314,7 @@ export const SimplePanel: React.FC<Props> = ({ options, data, width, height, onO
       onOptionsChange({
         ...options,
         topologyData: JSON.stringify(cyData),
-        themeSettings
+        themeSettings,
       });
       setSaveStatus('success');
       lastSavedIdx.current = stateRef.current.historyIdx;
@@ -332,27 +351,36 @@ export const SimplePanel: React.FC<Props> = ({ options, data, width, height, onO
   }, [state.history, state.historyIdx, refreshMetrics]);
 
   const handleAddDeviceConfirm = useCallback(
-    (deviceId: string, iconType: string, position?: { x: number; y: number }, size?: string, alias?: string, customPing?: string, customLoss?: string, customLatency?: string) => {
+    (
+      deviceId: string,
+      iconType: string,
+      position?: { x: number; y: number },
+      size?: string,
+      alias?: string,
+      customPing?: string,
+      customLoss?: string,
+      customLatency?: string
+    ) => {
       if (!cyRef.current) return;
-      
+
       const existing = cyRef.current.getElementById(deviceId);
       if (existing.length > 0) {
         setAlertMessage('Este dispositivo já está no mapa.');
         setShowAddModal(false);
         return;
       }
-      
+
       const pos = position || { x: cyRef.current.width() / 2, y: cyRef.current.height() / 2 };
       const newNode: cytoscape.ElementDefinition = {
         group: 'nodes',
-        data: { 
-            id: deviceId, 
-            alias: alias || '', 
-            iconType, 
-            nodeSize: size || 'medium',
-            customPingItem: customPing || '',
-            customLossItem: customLoss || '',
-            customLatencyItem: customLatency || ''
+        data: {
+          id: deviceId,
+          alias: alias || '',
+          iconType,
+          nodeSize: size || 'medium',
+          customPingItem: customPing || '',
+          customLossItem: customLoss || '',
+          customLatencyItem: customLatency || '',
         },
         position: pos,
       };
@@ -368,7 +396,7 @@ export const SimplePanel: React.FC<Props> = ({ options, data, width, height, onO
   const handleSaveEdge = (data: any) => {
     if (!cyRef.current) return;
     const cy = cyRef.current;
-    
+
     if (state.editingEdgeId) {
       const edge = cy.getElementById(state.editingEdgeId);
       if (edge.length) {
@@ -396,12 +424,12 @@ export const SimplePanel: React.FC<Props> = ({ options, data, width, height, onO
       const tgtNode = cy.getElementById(state.targetNodeId);
       if (srcNode.length) srcNode.removeClass('selected');
       if (tgtNode.length) tgtNode.removeClass('selected');
-      
+
       updateState({ sourceNodeId: null, targetNodeId: null, linkMode: false });
       refreshMetrics(cy);
       pushHistory(cy);
     }
-    
+
     setShowEdgeModal(false);
     updateState({ editingEdgeId: null });
   };
@@ -488,7 +516,7 @@ export const SimplePanel: React.FC<Props> = ({ options, data, width, height, onO
                     const edge2 = connectedEdges[1];
                     const src = edge1.data('source') === ctxMenu.targetId ? edge2.data('source') : edge1.data('source');
                     const tgt = edge1.data('target') === ctxMenu.targetId ? edge2.data('target') : edge1.data('target');
-                    
+
                     const edgeData = { ...edge1.data() };
                     delete edgeData.id;
                     delete edgeData.source;
@@ -525,7 +553,7 @@ export const SimplePanel: React.FC<Props> = ({ options, data, width, height, onO
                   const tgt = edge.data('target');
                   const edgeData = { ...edge.data() };
                   const linkId = edgeData.linkId || edge.id();
-                  
+
                   delete edgeData.id;
                   delete edgeData.source;
                   delete edgeData.target;
@@ -587,7 +615,7 @@ export const SimplePanel: React.FC<Props> = ({ options, data, width, height, onO
             if (cyRef.current && state.editingNodeId) {
               const cy = cyRef.current;
               const node = cy.getElementById(state.editingNodeId);
-              
+
               const nodeDataObj = { ...node.data() };
               nodeDataObj.iconType = newIcon;
               nodeDataObj.nodeSize = newSize;
@@ -598,34 +626,34 @@ export const SimplePanel: React.FC<Props> = ({ options, data, width, height, onO
               nodeDataObj.id = newDeviceId;
 
               restoreIcons([{ group: 'nodes', data: nodeDataObj }]);
-              
+
               if (newDeviceId !== state.editingNodeId) {
-                  const pos = { ...node.position() };
-                  
-                  const q = [node];
-                  const toRemove = new Set<any>([node]);
-                  while (q.length > 0) {
-                    const curr = q.shift();
-                    if (curr) {
-                      curr.connectedEdges().forEach((edge: any) => {
-                        const src = edge.source();
-                        const tgt = edge.target();
-                        if (src.id() !== curr.id() && src.data('id').includes('anchor') && !toRemove.has(src)) {
-                          toRemove.add(src);
-                          q.push(src);
-                        }
-                        if (tgt.id() !== curr.id() && tgt.data('id').includes('anchor') && !toRemove.has(tgt)) {
-                          toRemove.add(tgt);
-                          q.push(tgt);
-                        }
-                      });
-                    }
+                const pos = { ...node.position() };
+
+                const q = [node];
+                const toRemove = new Set<any>([node]);
+                while (q.length > 0) {
+                  const curr = q.shift();
+                  if (curr) {
+                    curr.connectedEdges().forEach((edge: any) => {
+                      const src = edge.source();
+                      const tgt = edge.target();
+                      if (src.id() !== curr.id() && src.data('id').includes('anchor') && !toRemove.has(src)) {
+                        toRemove.add(src);
+                        q.push(src);
+                      }
+                      if (tgt.id() !== curr.id() && tgt.data('id').includes('anchor') && !toRemove.has(tgt)) {
+                        toRemove.add(tgt);
+                        q.push(tgt);
+                      }
+                    });
                   }
-                  toRemove.forEach((n: any) => n.remove());
-                  
-                  cy.add({ group: 'nodes', data: nodeDataObj, position: pos });
+                }
+                toRemove.forEach((n: any) => n.remove());
+
+                cy.add({ group: 'nodes', data: nodeDataObj, position: pos });
               } else {
-                  node.data(nodeDataObj);
+                node.data(nodeDataObj);
               }
 
               refreshMetrics(cy);
@@ -660,15 +688,14 @@ export const SimplePanel: React.FC<Props> = ({ options, data, width, height, onO
         {duplicateAlert && (
           <div className="noc-modal-overlay">
             <div className="noc-modal-content" style={{ width: 350, textAlign: 'center' }}>
-              <h3 className="noc-modal-title" style={{ color: '#f87171' }}>{t('accessDenied')}</h3>
+              <h3 className="noc-modal-title" style={{ color: '#f87171' }}>
+                {t('accessDenied')}
+              </h3>
               <p style={{ color: '#d1d5db', marginBottom: 20 }}>
                 {t('connectionExists') || 'Já existe uma conexão entre esses componentes.'}
               </p>
               <div style={{ display: 'flex', justifyContent: 'center' }}>
-                <button
-                  className="noc-mod-btn confirm"
-                  onClick={() => setDuplicateAlert(false)}
-                >
+                <button className="noc-mod-btn confirm" onClick={() => setDuplicateAlert(false)}>
                   Confirmar
                 </button>
               </div>
@@ -679,15 +706,12 @@ export const SimplePanel: React.FC<Props> = ({ options, data, width, height, onO
         {alertMessage && (
           <div className="noc-modal-overlay">
             <div className="noc-modal-content" style={{ width: 350, textAlign: 'center' }}>
-              <h3 className="noc-modal-title" style={{ color: '#f87171' }}>Atenção</h3>
-              <p style={{ color: '#d1d5db', marginBottom: 20 }}>
-                {alertMessage}
-              </p>
+              <h3 className="noc-modal-title" style={{ color: '#f87171' }}>
+                Atenção
+              </h3>
+              <p style={{ color: '#d1d5db', marginBottom: 20 }}>{alertMessage}</p>
               <div style={{ display: 'flex', justifyContent: 'center' }}>
-                <button
-                  className="noc-mod-btn confirm"
-                  onClick={() => setAlertMessage(null)}
-                >
+                <button className="noc-mod-btn confirm" onClick={() => setAlertMessage(null)}>
                   Confirmar
                 </button>
               </div>
@@ -730,14 +754,14 @@ export const SimplePanel: React.FC<Props> = ({ options, data, width, height, onO
           t={t}
         />
 
-          <SettingsModal
+        <SettingsModal
           visible={showSettingsModal}
           themeSettings={themeSettings}
           setThemeSettings={(newSettings) => {
             setThemeSettings(newSettings);
             onOptionsChange({
               ...options,
-              themeSettings: newSettings
+              themeSettings: newSettings,
             });
           }}
           onClose={() => setShowSettingsModal(false)}

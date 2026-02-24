@@ -11,9 +11,7 @@ interface EdgeModalProps {
   t: (key: string) => string;
 }
 
-export const EdgeModal: React.FC<EdgeModalProps> = ({
-  visible, edgeData, zabbixMetrics, onClose, onSave, t
-}) => {
+export const EdgeModal: React.FC<EdgeModalProps> = ({ visible, edgeData, zabbixMetrics, onClose, onSave, t }) => {
   const [eMainDevice, setEMainDevice] = useState('');
   const [eInterface, setEInterface] = useState('');
   const [eMonitored, setEMonitored] = useState(false);
@@ -118,9 +116,7 @@ export const EdgeModal: React.FC<EdgeModalProps> = ({
                     setOpenDropdown(openDropdown === 'mainDevice' ? null : 'mainDevice');
                   }}
                 >
-                  <span>
-                    {eMainDevice ? (zabbixMetrics?.[eMainDevice]?.name || eMainDevice) : t('selectDevice')}
-                  </span>
+                  <span>{eMainDevice ? zabbixMetrics?.[eMainDevice]?.name || eMainDevice : t('selectDevice')}</span>
                   <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" strokeWidth="2" fill="none">
                     <polyline points="6 9 12 15 18 9"></polyline>
                   </svg>
@@ -174,7 +170,7 @@ export const EdgeModal: React.FC<EdgeModalProps> = ({
               <div className={`noc-custom-select ${openDropdown === 'iface' ? 'open' : ''}`}>
                 <div
                   className="noc-cs-header"
-                  style={{ opacity: (!eMainDevice || availableIfaces.length === 0) ? 0.5 : 1 }}
+                  style={{ opacity: !eMainDevice || availableIfaces.length === 0 ? 0.5 : 1 }}
                   onClick={(e) => {
                     if (!eMainDevice || availableIfaces.length === 0) return;
                     e.stopPropagation();
@@ -238,7 +234,15 @@ export const EdgeModal: React.FC<EdgeModalProps> = ({
                           nm[idx].icon = e.target.value;
                           setEMetrics(nm);
                         }}
-                        style={{ width: 40, background: '#1f2937', border: '1px solid #374151', color: '#fff', textAlign: 'center', padding: 4, borderRadius: 4 }}
+                        style={{
+                          width: 40,
+                          background: '#1f2937',
+                          border: '1px solid #374151',
+                          color: '#fff',
+                          textAlign: 'center',
+                          padding: 4,
+                          borderRadius: 4,
+                        }}
                       />
                       <span style={{ fontSize: 12, color: '#d1d5db' }}>{m.name}</span>
                     </div>
@@ -345,4 +349,3 @@ export const EdgeModal: React.FC<EdgeModalProps> = ({
     </div>
   );
 };
-

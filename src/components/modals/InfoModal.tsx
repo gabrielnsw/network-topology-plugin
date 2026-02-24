@@ -12,9 +12,7 @@ interface InfoModalProps {
   t: (key: string) => string;
 }
 
-export const InfoModal: React.FC<InfoModalProps> = ({
-  infoModal, cyRef, zabbixMetrics, dataSeries, onClose, t
-}) => {
+export const InfoModal: React.FC<InfoModalProps> = ({ infoModal, cyRef, zabbixMetrics, dataSeries, onClose, t }) => {
   const [trafficHistory, setTrafficHistory] = useState<TrafficPoint[]>([]);
   const [loadingHistory, setLoadingHistory] = useState(false);
 
@@ -55,7 +53,8 @@ export const InfoModal: React.FC<InfoModalProps> = ({
             <strong style={{ color: '#9ca3af' }}>{t('name')}:</strong> {metric?.name || id}
           </p>
           <p>
-            <strong style={{ color: '#9ca3af' }}>{t('ip')}:</strong> {metric?.ip || (metric?.interfaces && Object.keys(metric.interfaces)[0]) || 'N/A'}
+            <strong style={{ color: '#9ca3af' }}>{t('ip')}:</strong>{' '}
+            {metric?.ip || (metric?.interfaces && Object.keys(metric.interfaces)[0]) || 'N/A'}
           </p>
           <p>
             <strong style={{ color: '#9ca3af' }}>{t('ping')}:</strong>{' '}
@@ -75,7 +74,7 @@ export const InfoModal: React.FC<InfoModalProps> = ({
       let historyMax = 0;
       if (trafficHistory.length > 0) {
         historyMax = Math.max(...trafficHistory.map((pt) => Math.max(pt.tx, pt.rx)));
-        if (historyMax === 0) historyMax = 1; 
+        if (historyMax === 0) historyMax = 1;
       }
 
       const resolveNode = (startNodeId: string, currentEdgeId: string): string => {
@@ -121,7 +120,8 @@ export const InfoModal: React.FC<InfoModalProps> = ({
           </p>
           {d.eMonitored ? (
             <p>
-              <strong style={{ color: '#9ca3af' }}>{t('monitoredIface')}:</strong> {d.eInterface} ({t('onHost')} {d.eMainDevice})
+              <strong style={{ color: '#9ca3af' }}>{t('monitoredIface')}:</strong> {d.eInterface} ({t('onHost')}{' '}
+              {d.eMainDevice})
             </p>
           ) : (
             <p style={{ fontStyle: 'italic', color: '#6b7280' }}>{t('unmonitoredConn')}</p>
@@ -142,12 +142,16 @@ export const InfoModal: React.FC<InfoModalProps> = ({
                   overflow: 'hidden',
                 }}
               >
-                <svg viewBox="0 0 100 100" preserveAspectRatio="none" style={{ width: '100%', height: '100%', display: 'block' }}>
+                <svg
+                  viewBox="0 0 100 100"
+                  preserveAspectRatio="none"
+                  style={{ width: '100%', height: '100%', display: 'block' }}
+                >
                   {/* Grid / Guidelines */}
                   <line x1="0" y1="25" x2="100" y2="25" stroke="#374151" strokeWidth="0.5" strokeDasharray="2,2" />
                   <line x1="0" y1="50" x2="100" y2="50" stroke="#374151" strokeWidth="0.5" strokeDasharray="2,2" />
                   <line x1="0" y1="75" x2="100" y2="75" stroke="#374151" strokeWidth="0.5" strokeDasharray="2,2" />
-                  
+
                   {/* TX Polygon Fill */}
                   <polygon
                     fill="rgba(59, 130, 246, 0.1)"
@@ -158,7 +162,7 @@ export const InfoModal: React.FC<InfoModalProps> = ({
                     fill="rgba(16, 185, 129, 0.1)"
                     points={`0,100 ${trafficHistory.map((pt, i) => `${(i / Math.max(1, trafficHistory.length - 1)) * 100},${100 - (pt.rx / historyMax) * 100}`).join(' ')} 100,100`}
                   />
-                  
+
                   {/* TX Line */}
                   <polyline
                     fill="none"
@@ -166,7 +170,12 @@ export const InfoModal: React.FC<InfoModalProps> = ({
                     strokeWidth="1.5"
                     strokeLinejoin="round"
                     vectorEffect="non-scaling-stroke"
-                    points={trafficHistory.map((pt, i) => `${(i / Math.max(1, trafficHistory.length - 1)) * 100},${100 - (pt.tx / historyMax) * 100}`).join(' ')}
+                    points={trafficHistory
+                      .map(
+                        (pt, i) =>
+                          `${(i / Math.max(1, trafficHistory.length - 1)) * 100},${100 - (pt.tx / historyMax) * 100}`
+                      )
+                      .join(' ')}
                   />
                   {/* RX Line */}
                   <polyline
@@ -175,7 +184,12 @@ export const InfoModal: React.FC<InfoModalProps> = ({
                     strokeWidth="1.5"
                     strokeLinejoin="round"
                     vectorEffect="non-scaling-stroke"
-                    points={trafficHistory.map((pt, i) => `${(i / Math.max(1, trafficHistory.length - 1)) * 100},${100 - (pt.rx / historyMax) * 100}`).join(' ')}
+                    points={trafficHistory
+                      .map(
+                        (pt, i) =>
+                          `${(i / Math.max(1, trafficHistory.length - 1)) * 100},${100 - (pt.rx / historyMax) * 100}`
+                      )
+                      .join(' ')}
                   />
                 </svg>
               </div>
@@ -186,7 +200,9 @@ export const InfoModal: React.FC<InfoModalProps> = ({
                 <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
                   <div style={{ width: 10, height: 10, background: '#10b981' }}></div> RX
                 </span>
-                <span style={{ color: '#6b7280', marginLeft: 'auto' }}>{t('max')}: {(historyMax / 1000000).toFixed(1)} Mbps</span>
+                <span style={{ color: '#6b7280', marginLeft: 'auto' }}>
+                  {t('max')}: {(historyMax / 1000000).toFixed(1)} Mbps
+                </span>
               </div>
             </div>
           )}

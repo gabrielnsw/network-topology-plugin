@@ -21,17 +21,28 @@ interface SidebarProps {
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({
-  editMode, linkMode, zoomEnabled, saveStatus, historyIdx, historyLength, hasUnsavedChanges, t,
-  onToggleEdit, onToggleLink, onToggleZoom, onCenter, onSave, onUndo, onRedo, onAddDevice, onOpenSettings
+  editMode,
+  linkMode,
+  zoomEnabled,
+  saveStatus,
+  historyIdx,
+  historyLength,
+  hasUnsavedChanges,
+  t,
+  onToggleEdit,
+  onToggleLink,
+  onToggleZoom,
+  onCenter,
+  onSave,
+  onUndo,
+  onRedo,
+  onAddDevice,
+  onOpenSettings,
 }) => {
   return (
     <div className="noc-sidebar">
       <div className="noc-sb-menu">
-        <button
-          className={`noc-btn ${editMode ? 'active' : ''}`}
-          onClick={onToggleEdit}
-          title={t('editMode')}
-        >
+        <button className={`noc-btn ${editMode ? 'active' : ''}`} onClick={onToggleEdit} title={t('editMode')}>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
             <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
@@ -57,12 +68,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
               <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
             </svg>
           </button>
-          <button
-            className="noc-btn"
-            onClick={onUndo}
-            disabled={!editMode || historyIdx <= 0}
-            title={t('undo')}
-          >
+          <button className="noc-btn" onClick={onUndo} disabled={!editMode || historyIdx <= 0} title={t('undo')}>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <polyline points="9 14 4 9 9 4"></polyline>
               <path d="M20 20v-7a4 4 0 0 0-4-4H4"></path>
@@ -108,7 +114,15 @@ export const Sidebar: React.FC<SidebarProps> = ({
           </svg>
         </button>
 
-        <div style={{ position: 'relative', marginTop: 'auto', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+        <div
+          style={{
+            position: 'relative',
+            marginTop: 'auto',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+          }}
+        >
           {hasUnsavedChanges && saveStatus !== 'success' && (
             <div
               title="Alterações não salvas"
@@ -126,36 +140,36 @@ export const Sidebar: React.FC<SidebarProps> = ({
             </div>
           )}
           <button
-          className={`noc-btn save ${saveStatus === 'success' ? 'noc-success' : ''}`}
-          onClick={onSave}
-          disabled={!editMode}
-          title={t('saveMap')}
-          style={{
-            background: saveStatus === 'success' ? '#10b981' : saveStatus === 'error' ? '#ef4444' : '',
-            borderColor: saveStatus === 'success' ? '#059669' : saveStatus === 'error' ? '#b91c1c' : '',
-          }}
-        >
-          {saveStatus === 'saving' ? (
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="noc-spin">
-              <path d="M21 12a9 9 0 1 1-6.219-8.56"></path>
-            </svg>
-          ) : saveStatus === 'success' ? (
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <polyline points="20 6 9 17 4 12"></polyline>
-            </svg>
-          ) : saveStatus === 'error' ? (
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <line x1="18" y1="6" x2="6" y2="18"></line>
-              <line x1="6" y1="6" x2="18" y2="18"></line>
-            </svg>
-          ) : (
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
-              <polyline points="17 21 17 13 7 13 7 21"></polyline>
-              <polyline points="7 3 7 8 15 8"></polyline>
-            </svg>
-          )}
-        </button>
+            className={`noc-btn save ${saveStatus === 'success' ? 'noc-success' : ''}`}
+            onClick={onSave}
+            disabled={!editMode}
+            title={t('saveMap')}
+            style={{
+              background: saveStatus === 'success' ? '#10b981' : saveStatus === 'error' ? '#ef4444' : '',
+              borderColor: saveStatus === 'success' ? '#059669' : saveStatus === 'error' ? '#b91c1c' : '',
+            }}
+          >
+            {saveStatus === 'saving' ? (
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="noc-spin">
+                <path d="M21 12a9 9 0 1 1-6.219-8.56"></path>
+              </svg>
+            ) : saveStatus === 'success' ? (
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <polyline points="20 6 9 17 4 12"></polyline>
+              </svg>
+            ) : saveStatus === 'error' ? (
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+              </svg>
+            ) : (
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+                <polyline points="17 21 17 13 7 13 7 21"></polyline>
+                <polyline points="7 3 7 8 15 8"></polyline>
+              </svg>
+            )}
+          </button>
         </div>
       </div>
     </div>

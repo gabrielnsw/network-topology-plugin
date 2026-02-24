@@ -25,13 +25,10 @@ export const getBaseStyle = (themeSettings: any, ICON_KEYS: string[]): any[] => 
         'font-family': 'Inter, sans-serif',
       },
     },
-    ...ICON_KEYS.map(
-      (k) =>
-        ({
-          selector: `node[iconType="${k}"]`,
-          style: { 'background-image': 'data(icon)' },
-        })
-    ),
+    ...ICON_KEYS.map((k) => ({
+      selector: `node[iconType="${k}"]`,
+      style: { 'background-image': 'data(icon)' },
+    })),
     {
       selector: 'node.selected',
       style: {

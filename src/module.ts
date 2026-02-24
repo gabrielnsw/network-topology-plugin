@@ -18,8 +18,8 @@ const BrandingEditor = () => {
         alignItems: 'center',
         justifyContent: 'center',
         textAlign: 'center',
-        boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
-      }
+        boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+      },
     },
     React.createElement(
       'div',
@@ -44,8 +44,8 @@ const BrandingEditor = () => {
           fontWeight: 'bold',
           marginTop: '10px',
           cursor: 'pointer',
-          boxShadow: '0 2px 4px rgba(0,0,0,0.2)'
-        }
+          boxShadow: '0 2px 4px rgba(0,0,0,0.2)',
+        },
       },
       'Donate with PayPal'
     )
@@ -53,11 +53,10 @@ const BrandingEditor = () => {
 };
 
 export const plugin = new PanelPlugin<SimpleOptions>(SimplePanel).setPanelOptions((builder) => {
-  return builder
-    .addCustomEditor({
-      id: 'branding',
-      path: 'branding',
-      name: 'Plugin Info',
-      editor: BrandingEditor,
-    });
+  return builder.addCustomEditor({
+    id: 'branding',
+    path: 'branding',
+    name: 'Plugin Info',
+    editor: BrandingEditor,
+  });
 });
