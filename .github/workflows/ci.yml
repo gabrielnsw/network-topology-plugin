@@ -24,11 +24,11 @@ jobs:
     env:
       GRAFANA_ACCESS_POLICY_TOKEN: ${{ secrets.GRAFANA_ACCESS_POLICY_TOKEN }}
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v4
         with:
           persist-credentials: false
       - name: Setup Node.js environment
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@v4
         with:
           node-version: '22'
           cache: 'npm'
@@ -55,7 +55,7 @@ jobs:
 
       - name: Setup Go environment
         if: steps.check-for-backend.outputs.has-backend == 'true'
-        uses: actions/setup-go@v6
+        uses: actions/setup-go@v5
         with:
           go-version-file: go.mod
 
@@ -123,7 +123,7 @@ jobs:
           ARCHIVE: ${{ steps.metadata.outputs.archive }}
 
       - name: Archive Build
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v4
         with:
           name: ${{ steps.metadata.outputs.plugin-id }}-${{ steps.metadata.outputs.plugin-version }}
           path: ${{ steps.metadata.outputs.plugin-id }}
@@ -141,7 +141,7 @@ jobs:
       matrix: ${{ steps.resolve-versions.outputs.matrix }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v4
         with:
           persist-credentials: false
 
@@ -163,12 +163,12 @@ jobs:
     name: e2e test ${{ matrix.GRAFANA_IMAGE.name }}@${{ matrix.GRAFANA_IMAGE.VERSION }}
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v4
         with:
           persist-credentials: false
 
       - name: Download plugin
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v4
         with:
           path: dist
           name: ${{ needs.build.outputs.plugin-id }}-${{ needs.build.outputs.plugin-version }}
@@ -179,7 +179,7 @@ jobs:
           chmod +x ./dist/gpx_*
 
       - name: Setup Node.js environment
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@v4
         with:
           node-version: '22'
           cache: 'npm'
@@ -238,7 +238,7 @@ jobs:
     needs: [playwright-tests]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v4
         with:
           # required for playwright-gh-pages
           persist-credentials: true
