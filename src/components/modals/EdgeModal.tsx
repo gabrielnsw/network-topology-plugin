@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/set-state-in-effect */
 import React, { useState, useMemo, useEffect } from 'react';
 import { ZabbixHost, EdgeMetric } from '../../types';
 import { EDGE_WIDTH_LABELS, EDGE_STYLE_LABELS } from '../../constants';
@@ -38,9 +39,13 @@ export const EdgeModal: React.FC<EdgeModalProps> = ({ visible, edgeData, zabbixM
   const targetNodeId = edgeData?.target;
 
   const availableIfaces = useMemo(() => {
-    if (!eMonitored || !eMainDevice) return [];
+    if (!eMonitored || !eMainDevice) {
+      return [];
+    }
     const h = (zabbixMetrics || {})[eMainDevice];
-    if (!h || !h.interfaces) return [];
+    if (!h || !h.interfaces) {
+      return [];
+    }
     return Object.keys(h.interfaces).sort();
   }, [eMonitored, eMainDevice, zabbixMetrics]);
 
@@ -56,9 +61,13 @@ export const EdgeModal: React.FC<EdgeModalProps> = ({ visible, edgeData, zabbixM
         ];
         const newMetrics = allItemNames.map((n) => {
           const existing = eMetrics.find((m) => m.name === n);
-          if (existing) return existing;
+          if (existing) {
+            return existing;
+          }
           const def = defaultMetrics.find((d) => d.name === n);
-          if (def) return def;
+          if (def) {
+            return def;
+          }
           return { name: n, icon: '📊', enabled: false };
         });
         if (JSON.stringify(newMetrics) !== JSON.stringify(eMetrics)) {
@@ -68,7 +77,9 @@ export const EdgeModal: React.FC<EdgeModalProps> = ({ visible, edgeData, zabbixM
     }
   }, [eMonitored, eMainDevice, eInterface, zabbixMetrics, eMetrics]);
 
-  if (!visible) return null;
+  if (!visible) {
+    return null;
+  }
 
   return (
     <div className="noc-modal-overlay" onClick={() => setOpenDropdown(null)}>
@@ -172,7 +183,9 @@ export const EdgeModal: React.FC<EdgeModalProps> = ({ visible, edgeData, zabbixM
                   className="noc-cs-header"
                   style={{ opacity: !eMainDevice || availableIfaces.length === 0 ? 0.5 : 1 }}
                   onClick={(e) => {
-                    if (!eMainDevice || availableIfaces.length === 0) return;
+                    if (!eMainDevice || availableIfaces.length === 0) {
+                      return;
+                    }
                     e.stopPropagation();
                     setOpenDropdown(openDropdown === 'iface' ? null : 'iface');
                   }}

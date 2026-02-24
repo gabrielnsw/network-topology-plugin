@@ -9,7 +9,9 @@ import { NODE_SIZES } from '../constants';
  * @returns A formatted string containing the highest possible scale (e.g., "12.50 Mbps").
  */
 export const formatTraffic = (bps: number): string => {
-  if (bps === 0) return '0 bps';
+  if (bps === 0) {
+    return '0 bps';
+  }
   const units = ['bps', 'Kbps', 'Mbps', 'Gbps'];
   let i = 0;
   let val = bps;
@@ -73,7 +75,7 @@ export const refreshMetricsCore = (
       node.data('nodeHeight', sz.h);
       node.data('iconH', sz.iconScale);
     } else {
-      if (node.hasClass('anchor')) return;
+      if (node.hasClass('anchor')) {return;}
       node.data('statusColor', '#4b5563');
       const hostName = node.data('alias') || id;
       node.data('label', `${hostName}\n\n${t('noData')}`);
@@ -132,8 +134,8 @@ export const refreshMetricsCore = (
         }
 
         edge.data('eColor', edgeColor);
-        if (edge.source().hasClass('anchor')) edge.source().data('anchorColor', edgeColor);
-        if (edge.target().hasClass('anchor')) edge.target().data('anchorColor', edgeColor);
+        if (edge.source().hasClass('anchor')) {edge.source().data('anchorColor', edgeColor);}
+        if (edge.target().hasClass('anchor')) {edge.target().data('anchorColor', edgeColor);}
 
         if (!edge.target().hasClass('anchor')) {
           const finalTxt = txt.trim() ? `${txt.trim()}` : '';
@@ -148,14 +150,14 @@ export const refreshMetricsCore = (
           edge.data('trafficLabel', '');
         }
         edge.data('eColor', edgeColor);
-        if (edge.source().hasClass('anchor')) edge.source().data('anchorColor', edgeColor);
-        if (edge.target().hasClass('anchor')) edge.target().data('anchorColor', edgeColor);
+        if (edge.source().hasClass('anchor')) {edge.source().data('anchorColor', edgeColor);}
+        if (edge.target().hasClass('anchor')) {edge.target().data('anchorColor', edgeColor);}
       }
     } else {
       edge.data('trafficLabel', '');
       edge.data('eColor', edgeColor);
-      if (edge.source().hasClass('anchor')) edge.source().data('anchorColor', edgeColor);
-      if (edge.target().hasClass('anchor')) edge.target().data('anchorColor', edgeColor);
+      if (edge.source().hasClass('anchor')) {edge.source().data('anchorColor', edgeColor);}
+      if (edge.target().hasClass('anchor')) {edge.target().data('anchorColor', edgeColor);}
     }
   });
 };

@@ -75,7 +75,9 @@ export const SimplePanel: React.FC<Props> = ({ options, data, width, height, onO
   const t = useTranslation(themeSettings.language);
 
   const handleExportBackup = useCallback(() => {
-    if (!cyRef.current) return;
+    if (!cyRef.current) {
+      return;
+    }
     const elements = cyRef.current.elements().jsons();
     const backupData = {
       elements,
@@ -99,7 +101,9 @@ export const SimplePanel: React.FC<Props> = ({ options, data, width, height, onO
   const handleImportBackup = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const file = e.target.files?.[0];
-      if (!file) return;
+      if (!file) {
+        return;
+      }
       const reader = new FileReader();
       reader.onload = (event) => {
         try {
@@ -174,11 +178,15 @@ export const SimplePanel: React.FC<Props> = ({ options, data, width, height, onO
     if (data.series) {
       const metrics = parseZabbixDataFrame(data.series);
       setZabbixMetrics(metrics);
-      if (cyRef.current) refreshMetrics(cyRef.current);
+      if (cyRef.current) {
+        refreshMetrics(cyRef.current);
+      }
     }
   }, [data.series, refreshMetrics]);
   useEffect(() => {
-    if (!containerRef.current) return;
+    if (!containerRef.current) {
+      return;
+    }
     const cy = cytoscape({
       container: containerRef.current,
       elements: [],
@@ -207,11 +215,13 @@ export const SimplePanel: React.FC<Props> = ({ options, data, width, height, onO
              * to avoid generating loops internally over abstract Anchor elements.
              */
             const findTrueTarget = (startId: string, currentId: string, visited: Set<string>): string[] => {
-              if (visited.has(currentId)) return [];
+              if (visited.has(currentId)) {return [];}
               visited.add(currentId);
               const n = cy.getElementById(currentId);
-              if (!n.length) return [];
-              if (!n.hasClass('anchor') && currentId !== startId) return [currentId];
+              if (!n.length) {
+                return [];
+              }
+              if (!n.hasClass('anchor') && currentId !== startId) {return [currentId];}
 
               let endpoints: string[] = [];
               const connectedEdges = n.connectedEdges();
@@ -307,7 +317,9 @@ export const SimplePanel: React.FC<Props> = ({ options, data, width, height, onO
   }, [state.editMode]);
 
   const saveMap = useCallback(async () => {
-    if (!cyRef.current) return;
+    if (!cyRef.current) {
+      return;
+    }
     setSaveStatus('saving');
     try {
       const cyData = cleanElementsForSaving(cyRef.current);
@@ -325,7 +337,9 @@ export const SimplePanel: React.FC<Props> = ({ options, data, width, height, onO
   }, [options, themeSettings, onOptionsChange]);
 
   const undo = useCallback(() => {
-    if (!cyRef.current || state.historyIdx <= 0) return;
+    if (!cyRef.current || state.historyIdx <= 0) {
+      return;
+    }
     const cy = cyRef.current;
     const prevIdx = state.historyIdx - 1;
     const str = state.history[prevIdx];
@@ -338,7 +352,9 @@ export const SimplePanel: React.FC<Props> = ({ options, data, width, height, onO
   }, [state.history, state.historyIdx, refreshMetrics]);
 
   const redo = useCallback(() => {
-    if (!cyRef.current || state.historyIdx >= state.history.length - 1) return;
+    if (!cyRef.current || state.historyIdx >= state.history.length - 1) {
+      return;
+    }
     const cy = cyRef.current;
     const nextIdx = state.historyIdx + 1;
     const str = state.history[nextIdx];
@@ -361,7 +377,9 @@ export const SimplePanel: React.FC<Props> = ({ options, data, width, height, onO
       customLoss?: string,
       customLatency?: string
     ) => {
-      if (!cyRef.current) return;
+      if (!cyRef.current) {
+        return;
+      }
 
       const existing = cyRef.current.getElementById(deviceId);
       if (existing.length > 0) {
@@ -394,7 +412,9 @@ export const SimplePanel: React.FC<Props> = ({ options, data, width, height, onO
   );
 
   const handleSaveEdge = (data: any) => {
-    if (!cyRef.current) return;
+    if (!cyRef.current) {
+      return;
+    }
     const cy = cyRef.current;
 
     if (state.editingEdgeId) {
@@ -422,8 +442,8 @@ export const SimplePanel: React.FC<Props> = ({ options, data, width, height, onO
       });
       const srcNode = cy.getElementById(state.sourceNodeId);
       const tgtNode = cy.getElementById(state.targetNodeId);
-      if (srcNode.length) srcNode.removeClass('selected');
-      if (tgtNode.length) tgtNode.removeClass('selected');
+      if (srcNode.length) {srcNode.removeClass('selected');}
+      if (tgtNode.length) {tgtNode.removeClass('selected');}
 
       updateState({ sourceNodeId: null, targetNodeId: null, linkMode: false });
       refreshMetrics(cy);
@@ -507,7 +527,9 @@ export const SimplePanel: React.FC<Props> = ({ options, data, width, height, onO
             onRemove={() => {
               if (ctxMenu.targetIsNode && ctxMenu.targetId.includes('anchor')) {
                 const cy = cyRef.current;
-                if (!cy) return;
+                if (!cy) {
+                  return;
+                }
                 const anchorNode = cy.getElementById(ctxMenu.targetId);
                 if (anchorNode.length) {
                   const connectedEdges = anchorNode.connectedEdges();

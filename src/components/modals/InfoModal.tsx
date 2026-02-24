@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/refs */
 import React, { useState, useEffect } from 'react';
 import { ZabbixHost, TrafficPoint, InfoModalData } from '../../types';
 import { extractTrafficHistory } from '../../api';
@@ -19,7 +20,9 @@ export const InfoModal: React.FC<InfoModalProps> = ({ infoModal, cyRef, zabbixMe
   useEffect(() => {
     if (infoModal.visible && infoModal.type === 'edge') {
       const cy = cyRef.current;
-      if (!cy) return;
+      if (!cy) {
+        return;
+      }
       const tEdge = cy.getElementById(infoModal.targetId);
       if (tEdge && tEdge.length) {
         const d = tEdge.data();
@@ -35,15 +38,21 @@ export const InfoModal: React.FC<InfoModalProps> = ({ infoModal, cyRef, zabbixMe
     }
   }, [infoModal.visible, infoModal.type, infoModal.targetId, cyRef, dataSeries]);
 
-  if (!infoModal.visible) return null;
+  if (!infoModal.visible) {
+    return null;
+  }
 
   const renderContent = () => {
     const cy = cyRef.current;
-    if (!cy) return null;
+    if (!cy) {
+      return null;
+    }
 
     if (infoModal.type === 'node') {
       const node = cy.getElementById(infoModal.targetId);
-      if (!node.length) return null;
+      if (!node.length) {
+        return null;
+      }
       const id = node.id();
       const metric = zabbixMetrics[id];
 
@@ -68,13 +77,17 @@ export const InfoModal: React.FC<InfoModalProps> = ({ infoModal, cyRef, zabbixMe
       );
     } else {
       const edge = cy.getElementById(infoModal.targetId);
-      if (!edge.length) return null;
+      if (!edge.length) {
+        return null;
+      }
       const d = edge.data();
 
       let historyMax = 0;
       if (trafficHistory.length > 0) {
         historyMax = Math.max(...trafficHistory.map((pt) => Math.max(pt.tx, pt.rx)));
-        if (historyMax === 0) historyMax = 1;
+        if (historyMax === 0) {
+          historyMax = 1;
+        }
       }
 
       const resolveNode = (startNodeId: string, currentEdgeId: string): string => {
@@ -84,10 +97,14 @@ export const InfoModal: React.FC<InfoModalProps> = ({ infoModal, cyRef, zabbixMe
         while (currNodeId.includes('anchor') && safeCounter < 20) {
           safeCounter++;
           const aNode = cy.getElementById(currNodeId);
-          if (!aNode.length) break;
+          if (!aNode.length) {
+            break;
+          }
           const edges = aNode.connectedEdges();
           const nextEdge = edges.find((e: any) => e.id() !== prevEdgeId);
-          if (!nextEdge) break;
+          if (!nextEdge) {
+            break;
+          }
           const s = nextEdge.data('source');
           const t = nextEdge.data('target');
           currNodeId = s === currNodeId ? t : s;

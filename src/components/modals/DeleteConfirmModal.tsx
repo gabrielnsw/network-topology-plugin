@@ -9,7 +9,9 @@ interface DeleteConfirmModalProps {
 }
 
 export const DeleteConfirmModal: React.FC<DeleteConfirmModalProps> = ({ deleteConfirm, onClose, onConfirm, t }) => {
-  if (!deleteConfirm.visible) return null;
+  if (!deleteConfirm.visible) {
+    return null;
+  }
 
   return (
     <div className="noc-modal-overlay">

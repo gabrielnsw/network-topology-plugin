@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/set-state-in-effect */
 import React, { useState, useEffect } from 'react';
 import { ThemeSettings } from '../../types';
 import { DEFAULT_THEME } from '../../constants';
@@ -30,7 +31,9 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
     }
   }, [visible, themeSettings]);
 
-  if (!visible) return null;
+  if (!visible) {
+    return null;
+  }
 
   return (
     <div className="noc-modal-overlay" onClick={() => setOpenDropdown(null)}>

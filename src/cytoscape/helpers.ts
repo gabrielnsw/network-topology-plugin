@@ -22,7 +22,7 @@ export const cleanElementsForSaving = (cy: cytoscape.Core): any[] => {
 };
 
 export const restoreIcons = (elements: any[]) => {
-  if (!Array.isArray(elements)) return;
+  if (!Array.isArray(elements)) {return;}
   elements.forEach((el) => {
     if (el.group === 'nodes' && el.data.iconType && SVG_ICONS[el.data.iconType]) {
       el.data.icon = getIconDataUri(el.data.iconType);

@@ -53,7 +53,9 @@ export const AddDeviceModal: React.FC<AddDeviceModalProps> = ({
       .map(([id, h]) => ({ id, name: h.name }));
   }, [searchQuery, zabbixMetrics, existingNodes]);
 
-  if (!visible) return null;
+  if (!visible) {
+    return null;
+  }
 
   const renderItemDropdown = (
     id: string,
@@ -73,7 +75,9 @@ export const AddDeviceModal: React.FC<AddDeviceModalProps> = ({
             className="noc-cs-header"
             onClick={() => {
               setOpenDropdownId(isOpen ? null : id);
-              if (!isOpen) setSearchQueryItems('');
+              if (!isOpen) {
+                setSearchQueryItems('');
+              }
               setDropdownOpen(false);
             }}
           >
@@ -99,7 +103,9 @@ export const AddDeviceModal: React.FC<AddDeviceModalProps> = ({
                     setValue('');
                     setOpenDropdownId(null);
                     setSearchQueryItems('');
-                    if (id === 'ping') setShowPingError(false);
+                    if (id === 'ping') {
+                      setShowPingError(false);
+                    }
                   }}
                   style={{ fontStyle: 'italic', background: value === '' ? '#374151' : 'transparent' }}
                 >
@@ -112,7 +118,9 @@ export const AddDeviceModal: React.FC<AddDeviceModalProps> = ({
                       setValue(o);
                       setOpenDropdownId(null);
                       setSearchQueryItems('');
-                      if (id === 'ping') setShowPingError(false);
+                      if (id === 'ping') {
+                        setShowPingError(false);
+                      }
                     }}
                   >
                     {o}

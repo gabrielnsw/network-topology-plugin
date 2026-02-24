@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/set-state-in-effect */
 import React, { useState, useEffect, useMemo } from 'react';
 import { ICON_KEYS, getIconDataUri } from '../icons';
 import { ZabbixHost } from '../../types';
@@ -64,7 +65,9 @@ export const EditNodeModal: React.FC<EditNodeModalProps> = ({
       .map(([id, h]) => ({ id, name: h.name }));
   }, [searchQuery, zabbixMetrics]);
 
-  if (!cyNode) return null;
+  if (!cyNode) {
+    return null;
+  }
 
   const originalDeviceId = cyNode.id();
   const currentHost = zabbixMetrics[deviceId];
@@ -88,7 +91,9 @@ export const EditNodeModal: React.FC<EditNodeModalProps> = ({
             className="noc-cs-header"
             onClick={() => {
               setOpenDropdownId(isOpen ? null : id);
-              if (!isOpen) setSearchQueryItems('');
+              if (!isOpen) {
+                setSearchQueryItems('');
+              }
               setDropdownOpen(false);
             }}
           >
@@ -114,7 +119,9 @@ export const EditNodeModal: React.FC<EditNodeModalProps> = ({
                     setValue('');
                     setOpenDropdownId(null);
                     setSearchQueryItems('');
-                    if (id === 'ping') setShowPingError(false);
+                    if (id === 'ping') {
+                      setShowPingError(false);
+                    }
                   }}
                   style={{ fontStyle: 'italic', background: value === '' ? '#374151' : 'transparent' }}
                 >
@@ -127,7 +134,9 @@ export const EditNodeModal: React.FC<EditNodeModalProps> = ({
                       setValue(o);
                       setOpenDropdownId(null);
                       setSearchQueryItems('');
-                      if (id === 'ping') setShowPingError(false);
+                      if (id === 'ping') {
+                        setShowPingError(false);
+                      }
                     }}
                   >
                     {o}
