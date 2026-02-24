@@ -30,3 +30,11 @@ jobs:
           #policy_token: $
           # Usage of GRAFANA_API_KEY is deprecated, prefer `policy_token` option above
           #grafana_token: $
+
+      - name: Upload Plugin Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: gabrielnsw-noctopology-panel-archive
+          path: |
+            *.zip
+            *.md5

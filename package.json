@@ -1,6 +1,6 @@
 {
   "name": "network-topology",
-  "version": "1.0.3-alpha",
+  "version": "1.0.4-alpha",
   "scripts": {
     "build": "webpack -c ./.config/webpack/webpack.config.ts --env production",
     "dev": "webpack -w -c ./.config/webpack/webpack.config.ts --env development",
